@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
 public abstract class Application {
-    public Window window;
+    private static Window window;
 
     private String TITLE;
     private int WIDTH, HEIGHT;
@@ -22,7 +22,9 @@ public abstract class Application {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = new Window(TITLE, WIDTH, HEIGHT, ISFULLSCREEN);
+        window = Window.getInstance();
+
+        window.Init(TITLE, WIDTH, HEIGHT, ISFULLSCREEN);
 
         start();
 
