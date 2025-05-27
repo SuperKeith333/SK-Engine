@@ -1,6 +1,8 @@
 package com.skvr.sk_engine;
 
+import com.skvr.sk_engine.rendering.Camera;
 import com.skvr.sk_engine.rendering.Window;
+import com.skvr.sk_engine.resources.ResourceManager;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
@@ -26,6 +28,9 @@ public abstract class Application {
 
         window.Init(TITLE, WIDTH, HEIGHT, ISFULLSCREEN);
 
+        ResourceManager.getInstance().loadShader("Default Shader 3D", "/defaultShader3D.vert", "/defaultShader3D.frag");
+        ResourceManager.getInstance().loadShader("Default Shader 2D", "/defaultShader2D.vert", "/defaultShader2D.frag");
+
         start();
 
         hasStarted = true;
@@ -33,6 +38,9 @@ public abstract class Application {
             glfwPollEvents();
 
             glClear(GL_COLOR_BUFFER_BIT);
+
+            ResourceManager.getInstance().getShader("Default Shader 3D").setMatrix4f("view", Camera.getInstance().getViewMatrix());
+            ResourceManager.getInstance().getShader("Default Shader 3D").setMatrix4f("projection", Camera.getInstance().getProjectionMatrix());
 
             render();
 

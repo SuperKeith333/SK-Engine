@@ -31,15 +31,12 @@ public class TestApp extends Application {
         };
 
         ResourceManager.getInstance().loadMesh("Test Mesh", vertices, indices);
-        ResourceManager.getInstance().loadShader("Test Shader", "/shaders/test.vert", "/shaders/test.frag");
     }
 
     @Override
     public void render() {
-        ResourceManager.getInstance().getShader("Test Shader").use();
-        ResourceManager.getInstance().getShader("Test Shader").setMatrix4f("model", new Matrix4f().identity());
-        ResourceManager.getInstance().getShader("Test Shader").setMatrix4f("view", Camera.getInstance().getViewMatrix());
-        ResourceManager.getInstance().getShader("Test Shader").setMatrix4f("projection", Camera.getInstance().getProjectionMatrix());
+        ResourceManager.getInstance().getShader("Default Shader 3D").use();
+        ResourceManager.getInstance().getShader("Default Shader 3D").setMatrix4f("model", new Matrix4f().identity());
 
         ResourceManager.getInstance().getMesh("Test Mesh").draw();
     }
