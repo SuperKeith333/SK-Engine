@@ -1,13 +1,15 @@
 package com.skvr.sk_engine;
 
+import com.skvr.sk_engine.rendering.Camera;
 import com.skvr.sk_engine.rendering.Window;
+import com.skvr.sk_engine.resources.ResourceManager;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
 public abstract class Application {
-    public Window window;
+    private static Window window;
 
     private String TITLE;
     private int WIDTH, HEIGHT;
@@ -22,7 +24,12 @@ public abstract class Application {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = new Window(TITLE, WIDTH, HEIGHT, ISFULLSCREEN);
+        window = Window.getInstance();
+
+        window.Init(TITLE, WIDTH, HEIGHT, ISFULLSCREEN);
+
+        ResourceManager.getInstance().loadShader("Default Shader 3D", "/defaultShader3D.vert", "/defaultShader3D.frag");
+        ResourceManager.getInstance().loadShader("Default Shader 2D", "/defaultShader2D.vert", "/defaultShader2D.frag");
 
         start();
 
@@ -31,6 +38,9 @@ public abstract class Application {
             glfwPollEvents();
 
             glClear(GL_COLOR_BUFFER_BIT);
+
+            ResourceManager.getInstance().getShader("Default Shader 3D").setMatrix4f("view", Camera.getInstance().getViewMatrix());
+            ResourceManager.getInstance().getShader("Default Shader 3D").setMatrix4f("projection", Camera.getInstance().getProjectionMatrix());
 
             render();
 

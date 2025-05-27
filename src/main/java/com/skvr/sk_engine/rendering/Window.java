@@ -13,6 +13,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
 
+    private static Window instance;
+
     private long windowHandle;
     private String title;
     private int width, height;
@@ -20,7 +22,18 @@ public class Window {
     private IntBuffer prevY = BufferUtils.createIntBuffer(1);
     private boolean isFullscreen;
 
-    public Window(String title, int width, int height, boolean isFullscreen) {
+    private Window() {
+
+    }
+
+    public static Window getInstance() {
+        if (instance == null) {
+            instance = new Window();
+        }
+        return instance;
+    }
+
+    public void Init(String title, int width, int height, boolean isFullscreen) {
         this.title = title;
         this.width = width;
         this.height = height;

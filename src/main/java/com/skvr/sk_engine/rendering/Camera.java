@@ -1,21 +1,33 @@
 package com.skvr.sk_engine.rendering;
 
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
+
+import static java.lang.Math.*;
 
 public class Camera {
 
     private static Camera instance;
 
-    public Vector3f positon;
-    public Vector3f Front;
-    public Vector3f Up;
-    public Vector3f Right;
-    public Vector3f rotation;
+    public Vector3f position;
+    public Quaternionf rotation;
+
+    public Vector3f front;
+    public Vector3f up;
+    public Vector3f right;
+
+    public float fov = 45.0f;
 
     private Camera() {
-        positon = new Vector3f();
-        rotation = new Vector3f();
+        position = new Vector3f();
+        front = new Vector3f();
+        up = new Vector3f();
+        right = new Vector3f();
+
+        position.z = 3;
+
+        rotation = new Quaternionf();
     }
 
     public static Camera getInstance() {
@@ -27,33 +39,21 @@ public class Camera {
 
     public Matrix4f getViewMatrix() {
         Matrix4f view = new Matrix4f();
+
         updateCameraVectors();
 
-        return view.lookAt(positon, positon.add(Front), Up);
+        return view.lookAt(new Vector3f(position), new Vector3f(position).add(new Vector3f(front)), up);
     }
 
-    public Matrix4f getProjectionMatrix3D(int windowWidth, int windowHeight) {
+    public Matrix4f getProjectionMatrix() {
         Matrix4f projection = new Matrix4f();
 
-        return projection.perspective((float) Math.toRadians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
-    }
-
-    public Matrix4f getProjectionMatrix2D(int windowWidth, int windowHeight) {
-        Matrix4f projection = new Matrix4f();
-
-        return projection.ortho(0.0f, (float)windowWidth, (float)windowHeight, 0.0f, -1.0f, 1.0f);
+        return projection.perspective((float) toRadians(fov), (float) Window.getInstance().getWidth() / (float) Window.getInstance().getHeight(), 0.1f, 100.0f);
     }
 
     private void updateCameraVectors() {
-        Vector3f front = new Vector3f();
-
-        front.x = (float) (Math.cos(Math.toRadians(rotation.y)) * Math.cos(Math.toRadians(rotation.x)));
-        front.y = (float) Math.sin(Math.toRadians(rotation.x));
-        front.z = (float) (Math.sin(Math.toRadians(rotation.y)) * Math.cos(Math.toRadians(rotation.x)));
-        Front = front.normalize();
-
-        Right = Front.cross(new Vector3f(0, 1, 0));
-        Up = Right.cross(Front);
+        front = new Vector3f(0, 0, -1); // hardcode correct direction
+        up = new Vector3f(0, 1, 0);
+        right = new Vector3f(front).cross(up).normalize();
     }
 }
-

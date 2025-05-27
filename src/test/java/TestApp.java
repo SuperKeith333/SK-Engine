@@ -1,6 +1,8 @@
 import com.skvr.sk_engine.Application;
+import com.skvr.sk_engine.rendering.Camera;
 import com.skvr.sk_engine.rendering.Shader;
 import com.skvr.sk_engine.resources.ResourceManager;
+import org.joml.Matrix4f;
 
 import java.nio.FloatBuffer;
 
@@ -29,13 +31,13 @@ public class TestApp extends Application {
         };
 
         ResourceManager.getInstance().loadMesh("Test Mesh", vertices, indices);
-        ResourceManager.getInstance().loadShader("Test Shader", "/shaders/test.vert", "/shaders/test.frag");
     }
 
     @Override
     public void render() {
-        ResourceManager.getInstance().getShader("Test Shader").use();
+        ResourceManager.getInstance().getShader("Default Shader 3D").use();
+        ResourceManager.getInstance().getShader("Default Shader 3D").setMatrix4f("model", new Matrix4f().identity());
 
-        ResourceManager.getInstance().getMesh("Test Mesh").draw(12, 3);
+        ResourceManager.getInstance().getMesh("Test Mesh").draw();
     }
 }
