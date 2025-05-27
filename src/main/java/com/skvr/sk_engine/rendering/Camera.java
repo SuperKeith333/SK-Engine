@@ -25,8 +25,6 @@ public class Camera {
         up = new Vector3f();
         right = new Vector3f();
 
-        position.z = 3;
-
         rotation = new Quaternionf();
     }
 
@@ -45,15 +43,23 @@ public class Camera {
         return view.lookAt(new Vector3f(position), new Vector3f(position).add(new Vector3f(front)), up);
     }
 
+    public Matrix4f get2dViewMatrix() {
+        return new Matrix4f().identity().translate(-position.x, -position.y, 0);
+    }
+
     public Matrix4f getProjectionMatrix() {
         Matrix4f projection = new Matrix4f();
 
         return projection.perspective((float) toRadians(fov), (float) Window.getInstance().getWidth() / (float) Window.getInstance().getHeight(), 0.1f, 100.0f);
     }
 
+    public Matrix4f getOrthoMatrix() {
+        return new Matrix4f().ortho(0, Window.getInstance().getWidth(), Window.getInstance().getHeight(), 0, -1, 1);
+    }
+
     private void updateCameraVectors() {
-        front = new Vector3f(0, 0, -1); // hardcode correct direction
-        up = new Vector3f(0, 1, 0);
+        front = new Vector3f(0, 0, -1).rotate(rotation);
+        up = new Vector3f(0, 1, 0).rotate(rotation);
         right = new Vector3f(front).cross(up).normalize();
     }
 }

@@ -1,4 +1,4 @@
-package com.skvr.sk_engine.rendering;
+package com.skvr.sk_engine.resources;
 
 import org.joml.*;
 import org.lwjgl.BufferUtils;

@@ -22,6 +22,8 @@ public class Window {
     private IntBuffer prevY = BufferUtils.createIntBuffer(1);
     private boolean isFullscreen;
 
+    public int fps = 0;
+
     private Window() {
 
     }

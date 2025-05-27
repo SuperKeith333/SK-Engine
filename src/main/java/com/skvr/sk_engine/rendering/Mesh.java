@@ -16,7 +16,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class Mesh {
 
-    int VBO, VAO, EBO = -1;
+    int VBO, VAO, EBO = -1, texCoordsVBO = -1;
     int numVertices;
 
     public Mesh(float[] vertices) {
@@ -38,7 +38,31 @@ public class Mesh {
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * Float.BYTES, 0);
         glEnableVertexAttribArray(0);
     }
+    public Mesh(float[] vertices, float[] texCoords) {
+        numVertices = vertices.length / 3;
 
+        VAO = glGenVertexArrays();
+        VBO = glGenBuffers();
+        texCoordsVBO = glGenBuffers();
+
+        glBindVertexArray(VAO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        FloatBuffer vertexBuffer = memAllocFloat(vertices.length);
+        vertexBuffer.put(vertices).flip();
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(0);
+        memFree(vertexBuffer);
+
+        glBindBuffer(GL_ARRAY_BUFFER, texCoordsVBO);
+        FloatBuffer texCoordsBuffer = memAllocFloat(texCoords.length);
+        texCoordsBuffer.put(texCoords).flip();
+        glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(1);
+        memFree(texCoordsBuffer);
+    }
     public Mesh (float[] vertices, int[] indices) {
         numVertices = indices.length;
 
@@ -65,6 +89,39 @@ public class Mesh {
 
         memFree(vertexBuffer);
         memFree(indicesBuffer);
+    }
+
+    public Mesh (float[] vertices, int[] indices, float[] texCoords) {
+        numVertices = indices.length;
+
+        VAO = glGenVertexArrays();
+        VBO = glGenBuffers();
+        EBO = glGenBuffers();
+        texCoordsVBO = glGenBuffers();
+
+        glBindVertexArray(VAO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        FloatBuffer vertexBuffer = memAllocFloat(vertices.length);
+        vertexBuffer.put(vertices).flip();
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(0);
+        memFree(vertexBuffer);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        IntBuffer indicesBuffer = memAllocInt(indices.length);
+        indicesBuffer.put(indices).flip();
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
+        memFree(indicesBuffer);
+
+        glBindBuffer(GL_ARRAY_BUFFER, texCoordsVBO);
+        FloatBuffer texCoordsBuffer = memAllocFloat(texCoords.length);
+        texCoordsBuffer.put(texCoords).flip();
+        glBufferData(GL_ARRAY_BUFFER, texCoordsBuffer, GL_STATIC_DRAW);
+        glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(1);
+        memFree(texCoordsBuffer);
     }
 
     public void draw() {
