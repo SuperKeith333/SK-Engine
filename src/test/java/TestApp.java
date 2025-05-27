@@ -37,10 +37,10 @@ public class TestApp extends Application {
     @Override
     public void render() {
         ResourceManager.getInstance().getShader("Test Shader").use();
-        //ResourceManager.getInstance().getShader("Test Shader").setMatrix4f("model", new Matrix4f().identity());
-       // ResourceManager.getInstance().getShader("Test Shader").setMatrix4f("view", Camera.getInstance().getViewMatrix());
-        //ResourceManager.getInstance().getShader("Test Shader").setMatrix4f("projection", Camera.getInstance().getProjectionMatrix());
+        ResourceManager.getInstance().getShader("Test Shader").setMatrix4f("model", new Matrix4f().identity());
+        ResourceManager.getInstance().getShader("Test Shader").setMatrix4f("view", Camera.getInstance().getViewMatrix());
+        ResourceManager.getInstance().getShader("Test Shader").setMatrix4f("projection", Camera.getInstance().getProjectionMatrix());
 
-        ResourceManager.getInstance().getMesh("Test Mesh").draw(12, 3);
+        ResourceManager.getInstance().getMesh("Test Mesh").draw();
     }
 }

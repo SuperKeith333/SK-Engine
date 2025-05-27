@@ -42,7 +42,7 @@ public class Camera {
 
         updateCameraVectors();
 
-        return view.lookAt(position, position.add(front), up);
+        return view.lookAt(new Vector3f(position), new Vector3f(position).add(new Vector3f(front)), up);
     }
 
     public Matrix4f getProjectionMatrix() {
@@ -52,14 +52,8 @@ public class Camera {
     }
 
     private void updateCameraVectors() {
-        Vector3f newFront = new Vector3f();
-
-        newFront.x = (float) (cos(rotation.y) * cos(rotation.x));
-        newFront.y = (float) sin(rotation.x);
-        newFront.z = (float) (sin(rotation.y) * cos(rotation.x));
-        front = newFront.normalize();
-
-        right = front.cross(new Vector3f(0, 1, 0)).normalize();
-        up = right.cross(front).normalize();
+        front = new Vector3f(0, 0, -1); // hardcode correct direction
+        up = new Vector3f(0, 1, 0);
+        right = new Vector3f(front).cross(up).normalize();
     }
 }
