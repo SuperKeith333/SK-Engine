@@ -3,11 +3,14 @@ package com.skvr.sk_engine.scenes.sprites;
 import com.skvr.sk_engine.resources.ResourceManager;
 import com.skvr.sk_engine.scenes.Scene;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class Sprite2D extends Scene {
 
     String texture, shader;
+
+    Vector2f size;
 
     public Sprite2D(String texture, String shader) {
         super();
@@ -22,19 +25,24 @@ public class Sprite2D extends Scene {
         else
             this.shader = shader;
 
-        scale = new Vector3f(ResourceManager.getInstance().getTexture(texture).width, ResourceManager.getInstance().getTexture(texture).height, 0);
+        size = new Vector2f(ResourceManager.getInstance().getTexture(texture).width, ResourceManager.getInstance().getTexture(texture).height);
     }
 
     @Override
     public void render() {
+        Vector2f originalSize = new Vector2f(size);
+        size = new Vector2f(size.x * scale.x, size.y * scale.y);
+
         Matrix4f model = new Matrix4f().identity();
         model = model.translate(new Vector3f(position.x, position.y, 0));
 
-        model = model.translate(new Vector3f(0.5f * scale.x, 0.5f * scale.y, 0));
+        model = model.translate(new Vector3f(0.5f * size.x, 0.5f * size.y, 0));
         model = model.rotate(rotation);
-        model = model.translate(new Vector3f(-0.5f * scale.x, -0.5f * scale.y, 0));
+        model = model.translate(new Vector3f(-0.5f * size.x, -0.5f * size.y, 0));
 
-        model = model.scale(scale);
+        model = model.scale(new Vector3f(size, 0));
+
+        size = originalSize;
 
         ResourceManager.getInstance().getShader(shader).use();
         ResourceManager.getInstance().getTexture(texture).bind(0);

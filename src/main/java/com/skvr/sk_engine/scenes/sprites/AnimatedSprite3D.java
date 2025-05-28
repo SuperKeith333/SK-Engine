@@ -1,22 +1,21 @@
 package com.skvr.sk_engine.scenes.sprites;
 
 import com.skvr.sk_engine.enums.AnimationLoopTypes;
-import com.skvr.sk_engine.rendering.Window;
+import com.skvr.sk_engine.rendering.Camera;
 import com.skvr.sk_engine.resources.ResourceManager;
 import com.skvr.sk_engine.scenes.Scene;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
-public class AnimatedSprite2D extends Scene {
+import static org.joml.Math.toRadians;
 
-    Vector2f size;
-
+public class AnimatedSprite3D extends Scene {
     ArrayList<String> textures;
 
     String shader;
+    boolean alwaysFaceCamera;
 
     AnimationLoopTypes loopType;
     float speed;
@@ -25,7 +24,7 @@ public class AnimatedSprite2D extends Scene {
     boolean isPlaying = true;
     boolean movingForwards = true;
 
-    public AnimatedSprite2D(ArrayList<String> textures, String shader, AnimationLoopTypes loopType, float speed) {
+    public AnimatedSprite3D(ArrayList<String> textures, String shader, AnimationLoopTypes loopType, float speed, boolean alwaysFaceCamera) {
         super();
 
         for (int i = 0; i < textures.size(); i++) {
@@ -43,7 +42,7 @@ public class AnimatedSprite2D extends Scene {
         this.loopType = loopType;
         this.speed = speed;
 
-        size = new Vector2f(ResourceManager.getInstance().getTexture(textures.get(currentFrame)).width, ResourceManager.getInstance().getTexture(textures.get(currentFrame)).height);
+        this.alwaysFaceCamera = alwaysFaceCamera;
     }
 
     public void playAnimation() {
@@ -56,6 +55,9 @@ public class AnimatedSprite2D extends Scene {
 
     @Override
     public void update(float delta) {
+        if (alwaysFaceCamera)
+            Camera.getInstance().getViewMatrix().invert().getUnnormalizedRotation(rotation);
+
         timePassed += delta;
 
         if (timePassed >= speed / 60) {
@@ -83,7 +85,6 @@ public class AnimatedSprite2D extends Scene {
                     movingForwards = true;
                 }
             }
-            size = new Vector2f(ResourceManager.getInstance().getTexture(textures.get(currentFrame)).width, ResourceManager.getInstance().getTexture(textures.get(currentFrame)).height);
             timePassed = 0;
         }
     }
@@ -93,19 +94,14 @@ public class AnimatedSprite2D extends Scene {
         if (!isPlaying)
             return;
 
-        Vector2f originalSize = new Vector2f(size);
-        size = new Vector2f(size.x * scale.x, size.y * scale.y);
-
         Matrix4f model = new Matrix4f().identity();
-        model = model.translate(new Vector3f(position.x, position.y, 0));
+        model = model.translate(position);
 
-        model = model.translate(new Vector3f(0.5f * size.x, 0.5f * size.y, 0));
+        model = model.translate(origin);
         model = model.rotate(rotation);
-        model = model.translate(new Vector3f(-0.5f * size.x, -0.5f * size.y, 0));
+        model = model.translate(origin.negate());
 
-        model = model.scale(new Vector3f(size, 0));
-
-        size = originalSize;
+        model = model.scale(scale);
 
         ResourceManager.getInstance().getShader(shader).use();
         ResourceManager.getInstance().getTexture(textures.get(currentFrame)).bind(0);

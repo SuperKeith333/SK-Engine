@@ -54,7 +54,7 @@ public class Camera {
     }
 
     public Matrix4f getOrthoMatrix() {
-        return new Matrix4f().ortho(0, Window.getInstance().getWidth(), Window.getInstance().getHeight(), 0, -1, 1);
+        return new Matrix4f().ortho(0, Window.getInstance().getWidth(), 0, Window.getInstance().getHeight(), -1, 1);
     }
 
     private void updateCameraVectors() {

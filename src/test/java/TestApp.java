@@ -1,13 +1,18 @@
 import com.skvr.sk_engine.Application;
+import com.skvr.sk_engine.enums.AnimationLoopTypes;
 import com.skvr.sk_engine.rendering.Camera;
 import com.skvr.sk_engine.resources.ResourceManager;
+import com.skvr.sk_engine.scenes.sprites.AnimatedSprite2D;
 import com.skvr.sk_engine.scenes.sprites.Sprite2D;
 import com.skvr.sk_engine.scenes.sprites.Sprite3D;
+import org.joml.Vector3f;
 
+import java.util.ArrayList;
+
+import static com.skvr.sk_engine.enums.AnimationLoopTypes.SINGLE;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_REPEAT;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.system.MemoryUtil.memFree;
@@ -16,16 +21,19 @@ public class TestApp extends Application {
 
     @Override
     public void start() {
-        ResourceManager.getInstance().loadTexture("Test Texture", "/wall.png", GL_REPEAT, GL_LINEAR);
+        ResourceManager.getInstance().loadTexture("Face1", "/Face1.png", GL_REPEAT, GL_NEAREST);
+        ResourceManager.getInstance().loadTexture("Face2", "/Face2.png", GL_REPEAT, GL_NEAREST);
 
-        Sprite3D sprite = new Sprite3D("Test Texture", "Default Sprite 3D", true);
-        Sprite3D sprite2 = new Sprite3D("Test Texture", "Default Sprite 3D", false);
-        sprite.position.z = -3;
-        sprite2.position.z = -3;
-        sprite2.position.x = 2;
+        ArrayList<String> textures = new ArrayList<>();
+        textures.add("Face1");
+        textures.add("Face2");
+
+        AnimatedSprite2D sprite = new AnimatedSprite2D(textures, "Default Sprite 2D", SINGLE, 60);
+        sprite.position.x = 40;
+        sprite.position.y = 50;
+        sprite.scale.x = 6;
+        sprite.scale.y = 6;
         baseScene.addChild(sprite);
-        baseScene.addChild(sprite2);
-        Camera.getInstance().position.x = 1;
     }
 
     @Override
@@ -35,6 +43,6 @@ public class TestApp extends Application {
 
     @Override
     public void update(float delta) {
-        Camera.getInstance().rotation.rotateY((float) toRadians(40.0f * delta));
+
     }
 }
