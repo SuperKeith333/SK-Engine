@@ -44,7 +44,7 @@ public class Window {
         if (isFullscreen)
             glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 
-        windowHandle = glfwCreateWindow(width, height, title, isFullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
+        windowHandle = glfwCreateWindow(isFullscreen ? glfwGetVideoMode(glfwGetPrimaryMonitor()).width() : width, isFullscreen ? glfwGetVideoMode(glfwGetPrimaryMonitor()).height() : height, title, isFullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
         if (windowHandle == 0)
             throw new RuntimeException("Failed to create GLFW window");
 
@@ -56,8 +56,6 @@ public class Window {
         glfwSetWindowSizeCallback(windowHandle, (window, newWidth, newHeight) -> {
             this.width = newWidth;
             this.height = newHeight;
-
-            glViewport(0, 0, newWidth, newHeight);
         });
     }
 
@@ -86,7 +84,7 @@ public class Window {
             glfwGetWindowPos(windowHandle, prevX, prevY);
         }
 
-        glfwSetWindowMonitor(windowHandle, isFullscreen ? glfwGetPrimaryMonitor() : NULL, isFullscreen ? 0 : prevX.get(0), prevY.get(0), width, height, GLFW_DONT_CARE);
+        glfwSetWindowMonitor(windowHandle, isFullscreen ? glfwGetPrimaryMonitor() : NULL, isFullscreen ? 0 : prevX.get(0), prevY.get(0), isFullscreen ? glfwGetVideoMode(glfwGetPrimaryMonitor()).width() : width, isFullscreen ? glfwGetVideoMode(glfwGetPrimaryMonitor()).height() : height, GLFW_DONT_CARE);
     }
 
     public void setMouseMode(int mode) {

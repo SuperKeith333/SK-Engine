@@ -50,11 +50,11 @@ public class Camera {
     public Matrix4f getProjectionMatrix() {
         Matrix4f projection = new Matrix4f();
 
-        return projection.perspective((float) toRadians(fov), (float) Window.getInstance().getWidth() / (float) Window.getInstance().getHeight(), 0.1f, 100.0f);
+        return projection.perspective((float) toRadians(fov), (float) FrameBuffer.getInstance().width / (float) FrameBuffer.getInstance().height, 0.1f, 100.0f);
     }
 
     public Matrix4f getOrthoMatrix() {
-        return new Matrix4f().ortho(0, Window.getInstance().getWidth(), 0, Window.getInstance().getHeight(), -1, 1);
+        return new Matrix4f().ortho(0, FrameBuffer.getInstance().width, 0, FrameBuffer.getInstance().height, -1, 1);
     }
 
     private void updateCameraVectors() {

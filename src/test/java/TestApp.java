@@ -33,7 +33,7 @@ public class TestApp extends Application {
         textures.add("Face1");
         textures.add("Face2");
 
-        AnimatedSprite2D sprite = new AnimatedSprite2D(textures, "Default Sprite 2D", SINGLE, 60);
+        Sprite2D sprite = new Sprite2D("Face1", "Default Sprite 2D");
         sprite.position.x = 40;
         sprite.position.y = 50;
         sprite.scale.x = 6;
