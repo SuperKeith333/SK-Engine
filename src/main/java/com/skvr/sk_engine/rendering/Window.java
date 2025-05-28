@@ -41,8 +41,11 @@ public class Window {
         this.height = height;
         this.isFullscreen = isFullscreen;
 
-        if (isFullscreen)
+        if (isFullscreen) {
             glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+            this.width = glfwGetVideoMode(glfwGetPrimaryMonitor()).width();
+            this.height = glfwGetVideoMode(glfwGetPrimaryMonitor()).height();
+        }
 
         windowHandle = glfwCreateWindow(isFullscreen ? glfwGetVideoMode(glfwGetPrimaryMonitor()).width() : width, isFullscreen ? glfwGetVideoMode(glfwGetPrimaryMonitor()).height() : height, title, isFullscreen ? glfwGetPrimaryMonitor() : NULL, NULL);
         if (windowHandle == 0)
