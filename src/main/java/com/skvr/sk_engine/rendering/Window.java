@@ -89,6 +89,10 @@ public class Window {
         glfwSetWindowMonitor(windowHandle, isFullscreen ? glfwGetPrimaryMonitor() : NULL, isFullscreen ? 0 : prevX.get(0), prevY.get(0), width, height, GLFW_DONT_CARE);
     }
 
+    public void setMouseMode(int mode) {
+        glfwSetInputMode(windowHandle, GLFW_CURSOR, mode);
+    }
+
     public long getWindowHandle() {
         return windowHandle;
     }

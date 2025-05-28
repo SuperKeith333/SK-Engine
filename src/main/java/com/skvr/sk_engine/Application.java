@@ -4,10 +4,24 @@ import com.skvr.sk_engine.rendering.Camera;
 import com.skvr.sk_engine.rendering.Window;
 import com.skvr.sk_engine.resources.ResourceManager;
 import com.skvr.sk_engine.scenes.Scene;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWImage;
+import org.lwjgl.system.MemoryUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.stb.STBImage.*;
 
 public abstract class Application {
     private static Window window;
@@ -88,6 +102,8 @@ public abstract class Application {
             ResourceManager.getInstance().getShader("Default Sprite 3D").setMatrix4f("view", Camera.getInstance().getViewMatrix());
             ResourceManager.getInstance().getShader("Default Sprite 3D").setMatrix4f("projection", Camera.getInstance().getProjectionMatrix());
 
+            Input.update();
+
             update(deltaTime);
             render();
 
@@ -130,5 +146,54 @@ public abstract class Application {
 
         if (hasStarted)
             window.setFullscreen(isFullscreen);
+    }
+
+    public void setWindowIcon(String path) {
+        ByteBuffer imageBuffer;
+
+        URL url = getClass().getResource(path);
+        if (url == null) {
+            throw new IllegalArgumentException("Resource not found: " + path);
+        }
+
+        try (
+                InputStream inputStream = url.openStream();
+                ReadableByteChannel channel = Channels.newChannel(inputStream)
+        ) {
+            // Get the exact size of the file
+            int size = url.openConnection().getContentLength();
+            if (size <= 0) {
+                throw new RuntimeException("Failed to determine size of resource: " + path);
+            }
+
+            imageBuffer = BufferUtils.createByteBuffer(size);
+
+            while (imageBuffer.hasRemaining()) {
+                if (channel.read(imageBuffer) == -1) break;
+            }
+            imageBuffer.flip();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        IntBuffer width = BufferUtils.createIntBuffer(1);
+        IntBuffer height = BufferUtils.createIntBuffer(1);
+        IntBuffer comp = BufferUtils.createIntBuffer(1);
+
+        ByteBuffer image = stbi_load_from_memory(imageBuffer, width, height, comp, 4);
+        if (image == null) {
+            throw new RuntimeException("Failed to load image: " + stbi_failure_reason());
+        }
+
+        GLFWImage.Buffer icon = GLFWImage.malloc(1);
+        icon.width(width.get(0));
+        icon.height(height.get(0));
+        icon.pixels(image);
+
+        glfwSetWindowIcon(Window.getInstance().getWindowHandle(), icon);
+
+        stbi_image_free(image);
+        icon.free();
     }
 }
