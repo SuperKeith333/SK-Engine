@@ -1,5 +1,6 @@
 package com.skvr.sk_engine.scenes;
 
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -64,5 +65,19 @@ public class Scene {
 
         parent.removeChild(this);
         parent = null;
+    }
+
+    public Matrix4f getParentMatrix() {
+        Matrix4f model = new Matrix4f().identity();
+        if (parent != null)
+            model = getParentMatrix();
+
+        model.translate(position);
+        model.translate(origin);
+        model.rotate(rotation);
+        model.translate(new Vector3f(-origin.x, -origin.y, -origin.z));
+        model.scale(scale);
+
+        return model;
     }
 }

@@ -4,6 +4,7 @@ import com.skvr.sk_engine.rendering.Camera;
 import com.skvr.sk_engine.resources.ResourceManager;
 import com.skvr.sk_engine.scenes.Scene;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class Sprite3D extends Scene {
@@ -33,7 +34,7 @@ public class Sprite3D extends Scene {
 
     @Override
     public void render() {
-        Matrix4f model = new Matrix4f().identity();
+        Matrix4f model = getParentMatrix();
         model = model.translate(position);
 
         model = model.translate(origin);

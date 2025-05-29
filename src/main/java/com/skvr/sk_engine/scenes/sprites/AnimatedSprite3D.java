@@ -94,7 +94,7 @@ public class AnimatedSprite3D extends Scene {
         if (!isPlaying)
             return;
 
-        Matrix4f model = new Matrix4f().identity();
+        Matrix4f model = getParentMatrix();
         model = model.translate(position);
 
         model = model.translate(origin);

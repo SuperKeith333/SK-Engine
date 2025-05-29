@@ -96,7 +96,7 @@ public class AnimatedSprite2D extends Scene {
         Vector2f originalSize = new Vector2f(size);
         size = new Vector2f(size.x * scale.x, size.y * scale.y);
 
-        Matrix4f model = new Matrix4f().identity();
+        Matrix4f model = getParentMatrix();
         model = model.translate(new Vector3f(position.x, position.y, 0));
 
         model = model.translate(new Vector3f(0.5f * size.x, 0.5f * size.y, 0));
