@@ -7,6 +7,7 @@ import com.skvr.sk_engine.resources.ResourceManager;
 import com.skvr.sk_engine.scenes.sprites.AnimatedSprite2D;
 import com.skvr.sk_engine.scenes.sprites.Sprite2D;
 import com.skvr.sk_engine.scenes.sprites.Sprite3D;
+import imgui.ImGui;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -36,14 +37,23 @@ public class TestApp extends Application {
         Sprite2D sprite = new Sprite2D("Face1", "Default Sprite 2D");
         sprite.position.x = 40;
         sprite.position.y = 50;
-        sprite.scale.x = 6;
-        sprite.scale.y = 6;
+        sprite.scale.x = 2;
+        sprite.scale.y = 2;
         baseScene.addChild(sprite);
     }
 
     @Override
     public void render() {
 
+    }
+
+    @Override
+    public void imgui() {
+        ImGui.begin("Test Window");
+
+        ImGui.button("Test Bttn");
+
+        ImGui.end();
     }
 
     @Override

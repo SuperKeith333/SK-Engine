@@ -5,6 +5,8 @@ import com.skvr.sk_engine.rendering.FrameBuffer;
 import com.skvr.sk_engine.rendering.Window;
 import com.skvr.sk_engine.resources.ResourceManager;
 import com.skvr.sk_engine.scenes.Scene;
+import imgui.ImGui;
+import imgui.flag.ImGuiConfigFlags;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.system.MemoryUtil;
@@ -135,6 +137,13 @@ public abstract class Application {
             baseScene.beginUpdate(deltaTime);
             baseScene.beginRender();
 
+            if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+                final long backupWindowHandle = glfwGetCurrentContext();
+                ImGui.updatePlatformWindows();
+                ImGui.renderPlatformWindowsDefault();
+                glfwMakeContextCurrent(backupWindowHandle);
+            }
+
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glViewport(0, 0, window.getWidth(), window.getHeight());
             glClear(GL_COLOR_BUFFER_BIT);
@@ -146,6 +155,17 @@ public abstract class Application {
             ResourceManager.getInstance().getShader("FBO").setInt("screenTexture", 0);
 
             ResourceManager.getInstance().getMesh("FBO").draw();
+
+
+            window.imGuiGlfw.newFrame();
+            window.imGuiG13.newFrame();
+            ImGui.newFrame();
+
+            imgui();
+
+            ImGui.render();
+            window.imGuiG13.renderDrawData(ImGui.getDrawData());
+
 
 
             glfwSwapBuffers(window.getWindowHandle());
@@ -162,6 +182,7 @@ public abstract class Application {
 
     public abstract void start();
     public abstract void render();
+    public abstract void imgui();
     public abstract void update(float delta);
 
     public void setTitle(String title) {

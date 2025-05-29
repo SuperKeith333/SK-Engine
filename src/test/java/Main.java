@@ -3,7 +3,7 @@ public class Main {
         TestApp app = new TestApp();
 
         app.setTitle("Test");
-        app.setFullscreen(true);
+        app.setFullscreen(false);
         app.setWindowDimensions(320, 240);
 
         app.begin();

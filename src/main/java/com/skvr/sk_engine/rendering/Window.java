@@ -1,9 +1,12 @@
 package com.skvr.sk_engine.rendering;
 
+import imgui.ImGui;
+import imgui.gl3.ImGuiImplGl3;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.opengl.GL;
+import imgui.glfw.ImGuiImplGlfw;
 
 import java.nio.IntBuffer;
 
@@ -15,6 +18,9 @@ public class Window {
 
     private static Window instance;
 
+    public final ImGuiImplGlfw imGuiGlfw;
+    public final ImGuiImplGl3 imGuiG13;
+
     private long windowHandle;
     private String title;
     private int width, height;
@@ -25,7 +31,8 @@ public class Window {
     public int fps = 0;
 
     private Window() {
-
+        imGuiGlfw = new ImGuiImplGlfw();
+        imGuiG13 = new ImGuiImplGl3();
     }
 
     public static Window getInstance() {
@@ -60,6 +67,11 @@ public class Window {
             this.width = newWidth;
             this.height = newHeight;
         });
+
+        ImGui.createContext();
+
+        imGuiGlfw.init(windowHandle, true);
+        imGuiG13.init("#version 330");
     }
 
     public void setTitle(String newTitle) {

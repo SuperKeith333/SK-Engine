@@ -70,12 +70,12 @@ public class Scene {
     public Matrix4f getParentMatrix() {
         Matrix4f model = new Matrix4f().identity();
         if (parent != null)
-            model = getParentMatrix();
+            model = parent.getParentMatrix();
 
         model.translate(position);
         model.translate(origin);
         model.rotate(rotation);
-        model.translate(new Vector3f(-origin.x, -origin.y, -origin.z));
+        model.translate(origin.negate());
         model.scale(scale);
 
         return model;
