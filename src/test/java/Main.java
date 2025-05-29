@@ -4,7 +4,7 @@ public class Main {
 
         app.setTitle("Test");
         app.setFullscreen(false);
-        app.setWindowDimensions(320, 240);
+        app.setWindowDimensions(640, 480);
 
         app.begin();
     }

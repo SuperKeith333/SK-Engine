@@ -6,6 +6,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class Sprite2D extends Scene {
 
     String texture, shader;
@@ -49,6 +51,10 @@ public class Sprite2D extends Scene {
         ResourceManager.getInstance().getShader(shader).setMatrix4f("model", model);
         ResourceManager.getInstance().getShader(shader).setInt("currentTexture", 0);
 
+        glDisable(GL_DEPTH_TEST);
+
         ResourceManager.getInstance().getMesh("Default Sprite").draw();
+
+        glEnable(GL_DEPTH_TEST);
     }
 }

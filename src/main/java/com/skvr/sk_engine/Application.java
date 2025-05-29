@@ -25,6 +25,7 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.stb.STBImage.*;
@@ -93,8 +94,67 @@ public abstract class Application {
                 1, 0,
         };
 
+        float[] defaultCubeVertices = {
+                // Front (North)
+                -0.25f, -0.25f, 0.25f, // Bottom Left
+                -0.25f, 0.25f, 0.25f, // Top Left
+                0.25f, 0.25f, 0.25f,  // Top Right
+
+                -0.25f, -0.25f, 0.25f,
+                0.25f, -0.25f, 0.25f, // Bottom Right
+                0.25f, 0.25f, 0.25f,
+
+                // Back (South)
+                -0.25f, -0.25f, -0.25f,
+                -0.25f, 0.25f, -0.25f,
+                0.25f, 0.25f, -0.25f,
+
+                -0.25f, -0.25f, -0.25f,
+                0.25f, -0.25f, -0.25f,
+                0.25f, 0.25f, -0.25f,
+
+                // Left (East)
+                -0.25f, -0.25f, -0.25f,
+                -0.25f, 0.25f, -0.25f,
+                -0.25f, 0.25f, 0.25f,
+
+                -0.25f, -0.25f, -0.25f,
+                -0.25f, -0.25f, 0.25f,
+                -0.25f, 0.25f, 0.25f,
+
+                // Right (West)
+                0.25f, -0.25f, 0.25f,
+                0.25f, 0.25f, 0.25f,
+                0.25f, 0.25f, -0.25f,
+
+                0.25f, -0.25f, 0.25f,
+                0.25f, -0.25f, -0.25f,
+                0.25f, 0.25f, -0.25f,
+
+                // Top (Up)
+                -0.25f, 0.25f, 0.25f,
+                -0.25f, 0.25f, -0.25f,
+                0.25f, 0.25f, -0.25f,
+
+                -0.25f, 0.25f, 0.25f,
+                0.25f, 0.25f, 0.25f,
+                0.25f, 0.25f, -0.25f,
+
+                // Bottom (Down)
+                -0.25f, -0.25f, -0.25f,
+                -0.25f, -0.25f, 0.25f,
+                0.25f, -0.25f, 0.25f,
+
+                -0.25f, -0.25f, -0.25f,
+                0.25f, -0.25f, -0.25f,
+                0.25f, -0.25f, 0.25f,
+        };
+
         ResourceManager.getInstance().loadMesh("Default Sprite", vertices, indices, texCoords);
         ResourceManager.getInstance().loadMesh("FBO", FBOVertices, indices, FBOTexCoords);
+        ResourceManager.getInstance().loadMesh("Default Cube", defaultCubeVertices);
+
+        glEnable(GL_DEPTH_TEST);
 
         baseScene = new Scene();
 
@@ -115,7 +175,7 @@ public abstract class Application {
 
             glBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer.getInstance().FBO);
             glViewport(0, 0, FrameBuffer.getInstance().width, FrameBuffer.getInstance().height);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             ResourceManager.getInstance().getShader("Default Shader 3D").setMatrix4f("view", Camera.getInstance().getViewMatrix());
             ResourceManager.getInstance().getShader("Default Shader 3D").setMatrix4f("projection", Camera.getInstance().getProjectionMatrix());
@@ -143,6 +203,8 @@ public abstract class Application {
                 ImGui.renderPlatformWindowsDefault();
                 glfwMakeContextCurrent(backupWindowHandle);
             }
+
+            glDisable(GL_DEPTH_TEST);
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glViewport(0, 0, window.getWidth(), window.getHeight());

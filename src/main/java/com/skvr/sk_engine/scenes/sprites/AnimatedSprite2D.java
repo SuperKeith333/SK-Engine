@@ -10,6 +10,8 @@ import org.joml.Vector3f;
 
 import java.util.ArrayList;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class AnimatedSprite2D extends Scene {
 
     Vector2f size;
@@ -112,6 +114,10 @@ public class AnimatedSprite2D extends Scene {
         ResourceManager.getInstance().getShader(shader).setMatrix4f("model", model);
         ResourceManager.getInstance().getShader(shader).setInt("currentTexture", 0);
 
+        glDisable(GL_DEPTH_TEST);
+
         ResourceManager.getInstance().getMesh("Default Sprite").draw();
+
+        glEnable(GL_DEPTH_TEST);
     }
 }

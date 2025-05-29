@@ -8,6 +8,8 @@ import com.skvr.sk_engine.scenes.sprites.AnimatedSprite2D;
 import com.skvr.sk_engine.scenes.sprites.Sprite2D;
 import com.skvr.sk_engine.scenes.sprites.Sprite3D;
 import imgui.ImGui;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -23,42 +25,39 @@ import static org.lwjgl.system.MemoryUtil.memFree;
 
 public class TestApp extends Application {
 
+    Matrix4f model = new Matrix4f().identity();
+    Quaternionf rotation = new Quaternionf();
+
     @Override
     public void start() {
         setWindowIcon("/wall.png");
 
-        ResourceManager.getInstance().loadTexture("Face1", "/Face1.png", GL_REPEAT, GL_NEAREST);
-        ResourceManager.getInstance().loadTexture("Face2", "/Face2.png", GL_REPEAT, GL_NEAREST);
-
-        ArrayList<String> textures = new ArrayList<>();
-        textures.add("Face1");
-        textures.add("Face2");
-
-        Sprite2D sprite = new Sprite2D("Face1", "Default Sprite 2D");
-        sprite.position.x = 40;
-        sprite.position.y = 50;
-        sprite.scale.x = 2;
-        sprite.scale.y = 2;
-        baseScene.addChild(sprite);
+        ResourceManager.getInstance().loadBBModel("Test", "Test.bbmodel");
+        Camera.getInstance().position.z = 20;
     }
 
     @Override
     public void render() {
+        model = new Matrix4f().identity();
+        model.rotate(rotation);
 
+        ResourceManager.getInstance().getBBModel("Test").draw("Default Shader 3D", model);
     }
 
     @Override
     public void imgui() {
-        ImGui.begin("Test Window");
 
-        ImGui.button("Test Bttn");
-
-        ImGui.end();
     }
 
     @Override
     public void update(float delta) {
-        if (Input.wasKeyJustPressed(GLFW_KEY_W))
-            System.out.println("Hit");
+        if (Input.isKeyPressed(GLFW_KEY_A))
+            rotation.rotateY((float) (toRadians(40) * delta));
+        if (Input.isKeyPressed(GLFW_KEY_D))
+            rotation.rotateY((float) (toRadians(-40) * delta));
+        if (Input.isKeyPressed(GLFW_KEY_W))
+            rotation.rotateX((float) (toRadians(40) * delta));
+        if (Input.isKeyPressed(GLFW_KEY_S))
+            rotation.rotateX((float) (toRadians(-40) * delta));
     }
 }
